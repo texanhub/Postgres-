@@ -13,6 +13,15 @@ SHOW hba_file;
 SHOW data_directory;
 
 
+Check last vacuum time
+
+SELECT relname,
+       last_vacuum,
+       last_autovacuum,
+       last_analyze,
+       last_autoanalyze
+FROM pg_stat_user_tables
+ORDER BY relname;
 
 
 
