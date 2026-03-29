@@ -1,0 +1,19 @@
+To find the postgres table relationship :
+
+SELECT
+    conname,
+    conrelid::regclass AS child_table,
+    confrelid::regclass AS parent_table,
+    pg_get_constraintdef(oid) AS definition
+FROM pg_constraint
+WHERE conrelid = 'orders'::regclass
+  AND contype = 'f';
+
+
+To find the postgres schema level relationship :
+
+SELECT tc.table_schema, tc.table_name AS child_table, kcu.column_name AS child_column, 
+ccu.table_name AS parent_table, ccu.column_name AS parent_column, tc.constraint_name 
+FROM information_schema.table_constraints tc JOIN information_schema.key_column_usage kcu 
+ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage ccu 
+ON ccu.constraint_name = tc.constraint_name WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_schema = 'public' ORDER BY tc.table_name;
