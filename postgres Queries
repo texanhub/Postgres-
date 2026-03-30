@@ -105,3 +105,26 @@ ccu.table_name AS parent_table, ccu.column_name AS parent_column, tc.constraint_
 FROM information_schema.table_constraints tc JOIN information_schema.key_column_usage kcu 
 ON tc.constraint_name = kcu.constraint_name JOIN information_schema.constraint_column_usage ccu 
 ON ccu.constraint_name = tc.constraint_name WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_schema = 'public' ORDER BY tc.table_name;
+
+
+find the cardinality , skew  Exact distribution
+
+SELECT col, count(*) AS cnt,
+       round(100.0 * count(*) / sum(count(*)) OVER (), 2) AS pct
+FROM mytable
+GROUP BY col
+ORDER BY cnt DESC;
+
+Distinct count
+
+SELECT count(DISTINCT col) FROM mytable;
+
+Stats from optimizer pg_stats
+
+SELECT attname, n_distinct, most_common_vals, most_common_freqs
+FROM pg_stats
+WHERE tablename = 'mytable'
+  AND attname = 'col';
+
+
+
